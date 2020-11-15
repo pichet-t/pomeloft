@@ -10,7 +10,7 @@ Regarding the assignment below response has been made in aws_pomelo.tf terraform
  * Render a simple website that shows information being either pulled out of the data layer or from some 3rd party API - created, not pass connect to RDS test.    
  * Logging enabled to a central place - not start
 
-All done in one terraform file, no actions based build workflow. Results of terraform apply are in applied.json file.
+All done in one terraform file, no actions based build workflow. Results of terraform apply are in applied.results.
 
 Simple website is public_dns from Elastic IP below, please sign up by "I need an account" then sign in to create chat rooms.
 
