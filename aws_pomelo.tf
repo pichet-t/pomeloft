@@ -101,7 +101,7 @@ resource "aws_network_acl" "poml_prod" {
 
   ingress {
       protocol = "all"
-      rule_no = 100
+      rule_no = 900
       action = "allow"
       cidr_block = local.internet_cidr
       from_port = 0
@@ -119,7 +119,7 @@ resource "aws_network_acl" "poml_prod" {
 
    ingress {
      protocol   = "tcp"
-     rule_no    = 900
+     rule_no    = 100
      action     = "allow"
      cidr_block = local.internet_cidr
      from_port  = 22
