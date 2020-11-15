@@ -1,0 +1,465 @@
+# pomeloft
+
+//aws_vpc.poml_prod: Creating...
+//aws_ebs_volume.poml_userdata_backup: Creating...
+//aws_ebs_volume.poml_userdata_backup: Creation complete after 14s [id=vol-0fac67cc9ccff45cc]
+//aws_vpc.poml_prod: Creation complete after 17s [id=vpc-0d7c38e530bf21ad3]
+//aws_subnet.poml_secondary_az: Creating...
+//aws_subnet.poml_prod: Creating...
+//aws_internet_gateway.poml_prod: Creating...
+//aws_security_group.poml: Creating...
+//aws_subnet.poml_prod: Creation complete after 7s [id=subnet-0568d402c9a7970ef]
+//aws_subnet.poml_secondary_az: Creation complete after 7s [id=subnet-026a53d4dfa55612a]
+//aws_network_acl.poml_prod: Creating...
+//aws_db_subnet_group.poml_mysql: Creating...
+//aws_internet_gateway.poml_prod: Creation complete after 8s [id=igw-028b9d1e9731afc7d]
+//aws_route_table.poml_prod: Creating...
+//aws_db_subnet_group.poml_mysql: Creation complete after 4s [id=poml-mysql-subnet]
+//aws_security_group.poml: Creation complete after 12s [id=sg-0726367c5b7d34285]
+//aws_db_instance.mysql: Creating...
+//aws_instance.poml: Creating...
+//aws_route_table.poml_prod: Creation complete after 7s [id=rtb-0feca97e9c863a227]
+//aws_route_table_association.poml_prod: Creating...
+//aws_route_table_association.poml_prod: Creation complete after 1s [id=rtbassoc-0815f4b5fb773a34a]
+//aws_network_acl.poml_prod: Creation complete after 17s [id=acl-0de1d397d470983db]
+//aws_instance.poml: Creation complete after 30s [id=i-0c5b875d5e182627e]
+//aws_volume_attachment.ebs_att: Creating...
+//aws_eip.poml: Creating...
+//aws_eip.poml: Creation complete after 6s [id=eipalloc-00d30385cf5130a25]
+//aws_volume_attachment.ebs_att: Creation complete after 27s [id=vai-3739130632]
+//aws_db_instance.mysql: Creation complete after 3m38s [id=poml-mysql]
+
+Apply complete! Resources: 14 added, 0 changed, 0 destroyed.
+
+# aws_db_instance.mysql:
+resource "aws_db_instance" "mysql" {
+    address                               = "poml-mysql.cr9bc3p4ew9n.us-east-1.rds.amazonaws.com"
+    allocated_storage                     = 20
+    arn                                   = "arn:aws:rds:us-east-1:375990572553:db:poml-mysql"
+    auto_minor_version_upgrade            = true
+    availability_zone                     = "us-east-1b"
+    backup_retention_period               = 0
+    backup_window                         = "10:07-10:37"
+    ca_cert_identifier                    = "rds-ca-2019"
+    copy_tags_to_snapshot                 = false
+    db_subnet_group_name                  = "poml-mysql-subnet"
+    delete_automated_backups              = true
+    deletion_protection                   = false
+    endpoint                              = "poml-mysql.cr9bc3p4ew9n.us-east-1.rds.amazonaws.com:3306"
+    engine                                = "mysql"
+    engine_version                        = "5.7.26"
+    final_snapshot_identifier             = "poml-mysql-snap"
+    hosted_zone_id                        = "Z2R2ITUGPM61AM"
+    iam_database_authentication_enabled   = false
+    id                                    = "poml-mysql"
+    identifier                            = "poml-mysql"
+    instance_class                        = "db.t3.micro"
+    iops                                  = 0
+    license_model                         = "general-public-license"
+    maintenance_window                    = "sat:09:32-sat:10:02"
+    max_allocated_storage                 = 0
+    monitoring_interval                   = 0
+    multi_az                              = false
+    name                                  = "dracidoupe_cz"
+    option_group_name                     = "default:mysql-5-7"
+    parameter_group_name                  = "default.mysql5.7"
+    password                              = (sensitive value)
+    performance_insights_enabled          = false
+    performance_insights_retention_period = 0
+    port                                  = 3306
+    publicly_accessible                   = true
+    replicas                              = []
+    resource_id                           = "db-A3SB6A6ZIT5OZ36J22IKHUDTYM"
+    skip_final_snapshot                   = true
+    status                                = "available"
+    storage_encrypted                     = false
+    storage_type                          = "standard"
+    tags                                  = {
+        "product" = "poml"
+    }
+    username                              = "root"
+    vpc_security_group_ids                = [
+        "sg-0726367c5b7d34285",
+    ]
+}
+
+# aws_db_subnet_group.poml_mysql:
+resource "aws_db_subnet_group" "poml_mysql" {
+    arn         = "arn:aws:rds:us-east-1:375990572553:subgrp:poml-mysql-subnet"
+    description = "RDS subnet group"
+    id          = "poml-mysql-subnet"
+    name        = "poml-mysql-subnet"
+    subnet_ids  = [
+        "subnet-026a53d4dfa55612a",
+        "subnet-0568d402c9a7970ef",
+    ]
+}
+
+# aws_ebs_volume.poml_userdata_backup:
+resource "aws_ebs_volume" "poml_userdata_backup" {
+    arn                  = "arn:aws:ec2:us-east-1:375990572553:volume/vol-0fac67cc9ccff45cc"
+    availability_zone    = "us-east-1b"
+    encrypted            = false
+    id                   = "vol-0fac67cc9ccff45cc"
+    iops                 = 0
+    multi_attach_enabled = false
+    size                 = 1
+    tags                 = {
+        "Name"    = "poml-userbackup"
+        "product" = "poml"
+    }
+    type                 = "standard"
+}
+
+# aws_eip.poml:
+resource "aws_eip" "poml" {
+    association_id    = "eipassoc-03d04afc64f469d32"
+    domain            = "vpc"
+    id                = "eipalloc-00d30385cf5130a25"
+    instance          = "i-0c5b875d5e182627e"
+    network_interface = "eni-0839d83996ec14531"
+    private_dns       = "ip-192-168-1-77.ec2.internal"
+    private_ip        = "192.168.1.77"
+    public_dns        = "ec2-34-200-119-206.compute-1.amazonaws.com"
+    public_ip         = "34.200.119.206"
+    public_ipv4_pool  = "amazon"
+    vpc               = true
+}
+
+# aws_instance.poml:
+resource "aws_instance" "poml" {
+    ami                          = "ami-04c15f19de39e5c0e"
+    arn                          = "arn:aws:ec2:us-east-1:375990572553:instance/i-0c5b875d5e182627e"
+    associate_public_ip_address  = true
+    availability_zone            = "us-east-1b"
+    cpu_core_count               = 1
+    cpu_threads_per_core         = 1
+    disable_api_termination      = false
+    ebs_optimized                = false
+    get_password_data            = false
+    hibernation                  = false
+    id                           = "i-0c5b875d5e182627e"
+    instance_state               = "running"
+    instance_type                = "t2.nano"
+    ipv6_address_count           = 0
+    ipv6_addresses               = []
+    key_name                     = "my-KeyPair"
+    monitoring                   = false
+    primary_network_interface_id = "eni-0839d83996ec14531"
+    private_dns                  = "ip-192-168-1-77.ec2.internal"
+    private_ip                   = "192.168.1.77"
+    public_dns                   = "ec2-54-196-177-13.compute-1.amazonaws.com"
+    public_ip                    = "54.196.177.13"
+    security_groups              = []
+    source_dest_check            = true
+    subnet_id                    = "subnet-0568d402c9a7970ef"
+    tags                         = {
+        "product" = "poml"
+    }
+    tenancy                      = "default"
+    volume_tags                  = {}
+    vpc_security_group_ids       = [
+        "sg-0726367c5b7d34285",
+    ]
+
+    credit_specification {
+        cpu_credits = "standard"
+    }
+
+    metadata_options {
+        http_endpoint               = "enabled"
+        http_put_response_hop_limit = 1
+        http_tokens                 = "optional"
+    }
+
+    root_block_device {
+        delete_on_termination = true
+        device_name           = "/dev/xvda"
+        encrypted             = false
+        iops                  = 0
+        volume_id             = "vol-0bc5e4b10977a2257"
+        volume_size           = 12
+        volume_type           = "standard"
+    }
+}
+
+# aws_internet_gateway.poml_prod:
+resource "aws_internet_gateway" "poml_prod" {
+    arn      = "arn:aws:ec2:us-east-1:375990572553:internet-gateway/igw-028b9d1e9731afc7d"
+    id       = "igw-028b9d1e9731afc7d"
+    owner_id = "375990572553"
+    tags     = {
+        "product" = "poml"
+    }
+    vpc_id   = "vpc-0d7c38e530bf21ad3"
+}
+
+# aws_network_acl.poml_prod:
+resource "aws_network_acl" "poml_prod" {
+    arn        = "arn:aws:ec2:us-east-1:375990572553:network-acl/acl-0de1d397d470983db"
+    egress     = [
+        {
+            action          = "allow"
+            cidr_block      = "0.0.0.0/0"
+            from_port       = 0
+            icmp_code       = null
+            icmp_type       = null
+            ipv6_cidr_block = ""
+            protocol        = "all"
+            rule_no         = 900
+            to_port         = 0
+        },
+        {
+            action          = "allow"
+            cidr_block      = "0.0.0.0/0"
+            from_port       = 22
+            icmp_code       = null
+            icmp_type       = null
+            ipv6_cidr_block = ""
+            protocol        = "tcp"
+            rule_no         = 100
+            to_port         = 22
+        },
+        {
+            action          = "allow"
+            cidr_block      = "0.0.0.0/0"
+            from_port       = 443
+            icmp_code       = null
+            icmp_type       = null
+            ipv6_cidr_block = ""
+            protocol        = "tcp"
+            rule_no         = 300
+            to_port         = 443
+        },
+        {
+            action          = "allow"
+            cidr_block      = "0.0.0.0/0"
+            from_port       = 80
+            icmp_code       = null
+            icmp_type       = null
+            ipv6_cidr_block = ""
+            protocol        = "tcp"
+            rule_no         = 200
+            to_port         = 80
+        },
+    ]
+    id         = "acl-0de1d397d470983db"
+    ingress    = [
+        {
+            action          = "allow"
+            cidr_block      = "0.0.0.0/0"
+            from_port       = 0
+            icmp_code       = null
+            icmp_type       = null
+            ipv6_cidr_block = ""
+            protocol        = "all"
+            rule_no         = 100
+            to_port         = 0
+        },
+        {
+            action          = "allow"
+            cidr_block      = "0.0.0.0/0"
+            from_port       = 22
+            icmp_code       = null
+            icmp_type       = null
+            ipv6_cidr_block = ""
+            protocol        = "tcp"
+            rule_no         = 900
+            to_port         = 22
+        },
+        {
+            action          = "allow"
+            cidr_block      = "0.0.0.0/0"
+            from_port       = 443
+            icmp_code       = null
+            icmp_type       = null
+            ipv6_cidr_block = ""
+            protocol        = "tcp"
+            rule_no         = 300
+            to_port         = 443
+        },
+        {
+            action          = "allow"
+            cidr_block      = "0.0.0.0/0"
+            from_port       = 80
+            icmp_code       = null
+            icmp_type       = null
+            ipv6_cidr_block = ""
+            protocol        = "tcp"
+            rule_no         = 200
+            to_port         = 80
+        },
+    ]
+    owner_id   = "375990572553"
+    subnet_ids = [
+        "subnet-0568d402c9a7970ef",
+    ]
+    tags       = {
+        "product" = "poml"
+    }
+    vpc_id     = "vpc-0d7c38e530bf21ad3"
+}
+
+# aws_route_table.poml_prod:
+resource "aws_route_table" "poml_prod" {
+    id               = "rtb-0feca97e9c863a227"
+    owner_id         = "375990572553"
+    propagating_vgws = []
+    route            = [
+        {
+            cidr_block                = "0.0.0.0/0"
+            egress_only_gateway_id    = ""
+            gateway_id                = "igw-028b9d1e9731afc7d"
+            instance_id               = ""
+            ipv6_cidr_block           = ""
+            nat_gateway_id            = ""
+            network_interface_id      = ""
+            transit_gateway_id        = ""
+            vpc_peering_connection_id = ""
+        },
+    ]
+    tags             = {
+        "product" = "poml"
+    }
+    vpc_id           = "vpc-0d7c38e530bf21ad3"
+}
+
+# aws_route_table_association.poml_prod:
+resource "aws_route_table_association" "poml_prod" {
+    id             = "rtbassoc-0815f4b5fb773a34a"
+    route_table_id = "rtb-0feca97e9c863a227"
+    subnet_id      = "subnet-0568d402c9a7970ef"
+}
+
+# aws_security_group.poml:
+resource "aws_security_group" "poml" {
+    arn                    = "arn:aws:ec2:us-east-1:375990572553:security-group/sg-0726367c5b7d34285"
+    description            = "SG for poml"
+    egress                 = [
+        {
+            cidr_blocks      = [
+                "0.0.0.0/0",
+            ]
+            description      = ""
+            from_port        = 0
+            ipv6_cidr_blocks = []
+            prefix_list_ids  = []
+            protocol         = "-1"
+            security_groups  = []
+            self             = false
+            to_port          = 0
+        },
+    ]
+    id                     = "sg-0726367c5b7d34285"
+    ingress                = [
+        {
+            cidr_blocks      = [
+                "0.0.0.0/0",
+            ]
+            description      = "HTTP from the world"
+            from_port        = 80
+            ipv6_cidr_blocks = []
+            prefix_list_ids  = []
+            protocol         = "tcp"
+            security_groups  = []
+            self             = false
+            to_port          = 80
+        },
+        {
+            cidr_blocks      = [
+                "0.0.0.0/0",
+            ]
+            description      = "RDS  from the world"
+            from_port        = 3306
+            ipv6_cidr_blocks = []
+            prefix_list_ids  = []
+            protocol         = "tcp"
+            security_groups  = []
+            self             = false
+            to_port          = 3306
+        },
+        {
+            cidr_blocks      = [
+                "0.0.0.0/0",
+            ]
+            description      = "SSH from the world"
+            from_port        = 22
+            ipv6_cidr_blocks = []
+            prefix_list_ids  = []
+            protocol         = "tcp"
+            security_groups  = []
+            self             = false
+            to_port          = 22
+        },
+    ]
+    name                   = "sg_poml"
+    owner_id               = "375990572553"
+    revoke_rules_on_delete = false
+    tags                   = {
+        "product" = "poml"
+    }
+    vpc_id                 = "vpc-0d7c38e530bf21ad3"
+}
+
+# aws_subnet.poml_prod:
+resource "aws_subnet" "poml_prod" {
+    arn                             = "arn:aws:ec2:us-east-1:375990572553:subnet/subnet-0568d402c9a7970ef"
+    assign_ipv6_address_on_creation = false
+    availability_zone               = "us-east-1b"
+    availability_zone_id            = "use1-az2"
+    cidr_block                      = "192.168.1.0/24"
+    id                              = "subnet-0568d402c9a7970ef"
+    map_public_ip_on_launch         = true
+    owner_id                        = "375990572553"
+    tags                            = {
+        "product" = "poml"
+    }
+    vpc_id                          = "vpc-0d7c38e530bf21ad3"
+}
+
+# aws_subnet.poml_secondary_az:
+resource "aws_subnet" "poml_secondary_az" {
+    arn                             = "arn:aws:ec2:us-east-1:375990572553:subnet/subnet-026a53d4dfa55612a"
+    assign_ipv6_address_on_creation = false
+    availability_zone               = "us-east-1a"
+    availability_zone_id            = "use1-az1"
+    cidr_block                      = "192.168.2.0/24"
+    id                              = "subnet-026a53d4dfa55612a"
+    map_public_ip_on_launch         = true
+    owner_id                        = "375990572553"
+    tags                            = {
+        "product" = "poml"
+    }
+    vpc_id                          = "vpc-0d7c38e530bf21ad3"
+}
+
+# aws_volume_attachment.ebs_att:
+resource "aws_volume_attachment" "ebs_att" {
+    device_name  = "/dev/xvdf"
+    id           = "vai-3739130632"
+    instance_id  = "i-0c5b875d5e182627e"
+    skip_destroy = true
+    volume_id    = "vol-0fac67cc9ccff45cc"
+}
+
+# aws_vpc.poml_prod:
+resource "aws_vpc" "poml_prod" {
+    arn                              = "arn:aws:ec2:us-east-1:375990572553:vpc/vpc-0d7c38e530bf21ad3"
+    assign_generated_ipv6_cidr_block = false
+    cidr_block                       = "192.168.0.0/16"
+    default_network_acl_id           = "acl-01849f0ac0f45c09e"
+    default_route_table_id           = "rtb-00f07a9a58d3f17ff"
+    default_security_group_id        = "sg-050a7a7d5851f241b"
+    dhcp_options_id                  = "dopt-29017753"
+    enable_classiclink               = false
+    enable_classiclink_dns_support   = false
+    enable_dns_hostnames             = true
+    enable_dns_support               = true
+    id                               = "vpc-0d7c38e530bf21ad3"
+    instance_tenancy                 = "default"
+    main_route_table_id              = "rtb-00f07a9a58d3f17ff"
+    owner_id                         = "375990572553"
+    tags                             = {
+        "product" = "poml"
+    }
+}
