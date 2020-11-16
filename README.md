@@ -1,5 +1,3 @@
-#pomelofasion
-
 Regarding the assignment below response has been made in aws_pomelo.tf terraform file.
 
  * Additional non-default VPC with internet gateway and route table - created
